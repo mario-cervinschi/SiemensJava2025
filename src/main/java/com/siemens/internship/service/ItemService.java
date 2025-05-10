@@ -8,10 +8,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
 
 /**
  * Service handling the logic for our Items.
@@ -23,7 +21,7 @@ public class ItemService {
     private ItemRepository itemRepository;
 
     // Thread pool for executing asynchronous tasks
-    private static ExecutorService executor = Executors.newFixedThreadPool(10);
+    private static final ExecutorService executor = Executors.newFixedThreadPool(10);
 
     /**
      * Gets all items from the database.
@@ -92,7 +90,7 @@ public class ItemService {
             CompletableFuture<Item> future = CompletableFuture.supplyAsync(() -> {
                 try {
                     // Simulate processing time
-                    Thread.sleep(100);
+                    Thread.sleep(200);
 
                     // Get item from database
                     Item item = itemRepository.findById(id).orElse(null);

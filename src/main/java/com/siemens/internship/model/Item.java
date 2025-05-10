@@ -2,9 +2,7 @@ package com.siemens.internship.model;
 
 import jakarta.persistence.*;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -48,7 +46,8 @@ public class Item {
     /**
      * The email of our Item - has to be a valid one!
      */
-    @Email(message = "Email invalid.") // provides email regex verification
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$",
+            message = "Email format not valid")
     @NotBlank(message = "Blank email.")
     private String email;
 }

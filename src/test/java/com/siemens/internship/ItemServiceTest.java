@@ -85,7 +85,7 @@ public class ItemServiceTest {
         when(itemRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         CompletableFuture<List<Item>> future = itemService.processItemsAsync();
-        List<Item> result = future.get(); // wait for async completion
+        List<Item> result = future.get();
 
         assertEquals(2, result.size());
         assertEquals("PROCESSED", result.get(0).getStatus());
