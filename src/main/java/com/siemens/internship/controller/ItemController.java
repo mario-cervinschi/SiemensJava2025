@@ -1,8 +1,11 @@
-package com.siemens.internship;
+package com.siemens.internship.controller;
 
+import com.siemens.internship.service.ItemService;
+import com.siemens.internship.model.Item;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +27,9 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createItem(@Valid @RequestBody Item item, BindingResult result) {
+    public ResponseEntity<Object> createItem(@Valid @RequestBody Item item, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
+            return ResponseEntity.badRequest().body(result.getAllErrors().get(0).getDefaultMessage());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(itemService.save(item));
     }
@@ -39,7 +42,7 @@ public class ItemController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item item, BindingResult result) {
+    public ResponseEntity<Item> updateItem(@PathVariable Long id, @Valid @RequestBody Item item, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.badRequest().body(null);
         }
@@ -64,9 +67,12 @@ public class ItemController {
         }
     }
 
-    @GetMapping("/process")
+    @GetMapping(value = "/process", produces = MediaType.APPLICATION_JSON_VALUE)
     public CompletableFuture<ResponseEntity<List<Item>>> processItems() {
         return itemService.processItemsAsync()
-                .thenApply(ResponseEntity::ok);
+                .thenApply(items -> ResponseEntity
+                        .ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(items));
     }
 }
